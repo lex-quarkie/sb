@@ -33,7 +33,6 @@ def upgrade():
     op.create_index(op.f("ix_user_id"), "user", ["id"], unique=False)
 
 
-
 def downgrade():
     op.drop_index(op.f("ix_user_id"), table_name="user")
     op.drop_index(op.f("ix_user_full_name"), table_name="user")

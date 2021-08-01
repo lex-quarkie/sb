@@ -10,4 +10,5 @@ class Fighter(Base):
     first_name = Column(String, index=True, nullable=False)
     last_name = Column(String, index=True, nullable=False)
     photo_url = Column(String)
+    city = Column(String)
     weight_category_id = Column(Integer, ForeignKey("weight_category.id"))
