@@ -2,7 +2,6 @@ from sqlalchemy import Column, ForeignKey, String, Integer
 from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
-from app.models.fighter import Fighter
 
 
 class Match(Base):

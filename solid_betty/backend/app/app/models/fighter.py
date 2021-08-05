@@ -11,4 +11,6 @@ class Fighter(Base):
     last_name = Column(String, index=True, nullable=False)
     photo_url = Column(String)
     city = Column(String)
+
     weight_category_id = Column(Integer, ForeignKey("weight_category.id"))
+    league_id = Column(Integer, ForeignKey("league.id"))

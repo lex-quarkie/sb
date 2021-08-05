@@ -42,6 +42,17 @@ def upgrade():
                   (6,'Весовая категория свыше 88', 88.1, 180);
                   """
     )
+    op.create_table(
+        "league",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("title", sa.String(), nullable=False),
+        sa.Column("min_rounds", sa.Integer(), nullable=False),
+        sa.Column("max_rounds", sa.Integer(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.execute("""insert into league values
+               (1, 'K-1', 3, 4);
+               """)
 
     op.create_table(
         "fighter",
@@ -51,7 +62,9 @@ def upgrade():
         sa.Column("photo_url", sa.String(), nullable=True),
         sa.Column("city", sa.String(), nullable=True),
         sa.Column("weight_category_id", sa.Integer(), nullable=True),
+        sa.Column("league_id", sa.Integer(), nullable=True),
         sa.ForeignKeyConstraint(["weight_category_id"], ["weight_category.id"]),
+        sa.ForeignKeyConstraint(["league_id"], ["league.id"]),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
@@ -64,32 +77,32 @@ def upgrade():
     op.execute(
         """insert into fighter values
         (1, 'Эрик','Гусев', 
-        'https://thumb.tildacdn.com/tild6434-3932-4639-b639-393165653264/-/resize/258x/-/format/webp/_1_1.png', 'Киев', 1),
+        'https://thumb.tildacdn.com/tild6434-3932-4639-b639-393165653264/-/resize/258x/-/format/webp/_1_1.png', 'Киев', 1,1),
         (2, 'Игорь','Христосов', 
-        'https://thumb.tildacdn.com/tild3436-6233-4838-b638-653132393430/-/resize/258x/-/format/webp/photo.png', 'Харьков', 1),
+        'https://thumb.tildacdn.com/tild3436-6233-4838-b638-653132393430/-/resize/258x/-/format/webp/photo.png', 'Харьков', 1,1),
         (3, 'Денис','Кривошеев', 
-        'https://thumb.tildacdn.com/tild3335-6665-4665-b665-616262346437/-/resize/258x/-/format/webp/_1.png', 'Черновцы', 1),
+        'https://thumb.tildacdn.com/tild3335-6665-4665-b665-616262346437/-/resize/258x/-/format/webp/_1.png', 'Черновцы', 1,1),
         (4, 'Михаил','Коваль', 
-        'https://thumb.tildacdn.com/tild6133-3063-4630-b539-663064323635/-/resize/258x/-/format/webp/__-_1_1.png', 'Ивано-Франковск', 1),
-        (5,'Руслан','Писковый','https://thumb.tildacdn.com/tild3731-3230-4261-b239-613434653730/-/resize/258x/-/format/webp/_1.png', 'Киев',2),
-        (6,'Олег','Павляк','https://thumb.tildacdn.com/tild3065-6431-4738-a432-363230623831/-/resize/258x/-/format/webp/AW5B7166_1_1.png','Львов',2),
-        (7,'Ярослав','Волошин','https://thumb.tildacdn.com/tild3531-3863-4237-a337-636333616266/-/resize/258x/-/format/webp/52_1.png','Ивано-Франковск',2),
-        (8,'Сергей','Полюга','https://thumb.tildacdn.com/tild3234-6335-4135-b464-666436633134/-/resize/258x/-/format/webp/112_1.png','Черновцы',2),
-        (9,'Алексей','Михайлов','https://thumb.tildacdn.com/tild3233-3232-4135-b937-353035623863/-/resize/258x/-/format/webp/photo.png','Киев',3),
-        (10,'Дмитрий','Шевцов','https://thumb.tildacdn.com/tild3062-3466-4565-b534-313831646362/-/resize/258x/-/format/webp/photo.png','Харьков',3),
-        (11,'Владислав','Авксентенко','https://thumb.tildacdn.com/tild3834-6266-4036-b765-396536653039/-/resize/258x/-/format/webp/155_1.png','Харьков',3),
-        (12,'Микола','Гавриляк','https://thumb.tildacdn.com/tild3736-3938-4838-a134-643266636365/-/resize/258x/-/format/webp/242_1_1.png','Львов',3),
-        (13,'Сергей','Мусихин','https://thumb.tildacdn.com/tild3166-3063-4364-b938-613439336435/-/resize/258x/-/format/webp/AW5B8179_1_1.png','Киев',4),
-        (14,'Касым','Сапаров','https://thumb.tildacdn.com/tild6436-6335-4166-a337-393233316166/-/resize/258x/-/format/webp/AW5B8197_1.png','Харьков',4),
-        (15,'Александр','Гушуватый','https://thumb.tildacdn.com/tild3962-6437-4565-b861-636630623864/-/resize/258x/-/format/webp/photo.png','Черновцы',4),
-        (16,'Богдан','Голосов','https://thumb.tildacdn.com/tild3330-3338-4066-b563-353462343261/-/resize/258x/-/format/webp/photo.png','Киев',4),
-        (17,'Игорь','Сойкин','https://thumb.tildacdn.com/tild6365-3336-4434-b335-306338643361/-/resize/258x/-/format/webp/AW5B8547_1.png','Харьков',5),
-        (18,'Даниил','Линчевский','https://thumb.tildacdn.com/tild6566-6234-4463-b839-373661633737/-/resize/258x/-/format/webp/AW5B8280_1.png','Николаев',5),
-        (19,'Артур','Дубаускас','https://thumb.tildacdn.com/tild3038-3535-4662-b263-623531326335/-/resize/258x/-/format/webp/AW5B8734_1.png','Винница',5),
-        (20,'Эзиз','Оразмедов','https://thumb.tildacdn.com/tild6266-3361-4739-a565-383639373137/-/resize/258x/-/format/webp/167_1.png','Киев',5),
-        (21,'Станислав','Хмыльковский','https://thumb.tildacdn.com/tild3261-3035-4562-b037-363130346530/-/resize/258x/-/format/webp/AW5B8644_1.png','Ивано-Франковск',6),
-        (22,'Даниил','Воеводкин','https://thumb.tildacdn.com/tild3365-6265-4461-a532-613066653463/-/resize/258x/-/format/webp/__2_1_3.png','Николаев',6),
-        (23,'Роман','Кошель','https://thumb.tildacdn.com/tild3363-6465-4662-b530-643438333933/-/resize/258x/-/format/webp/__2_1.png','Харьков',6);"""
+        'https://thumb.tildacdn.com/tild6133-3063-4630-b539-663064323635/-/resize/258x/-/format/webp/__-_1_1.png', 'Ивано-Франковск', 1,1),
+        (5,'Руслан','Писковый','https://thumb.tildacdn.com/tild3731-3230-4261-b239-613434653730/-/resize/258x/-/format/webp/_1.png', 'Киев',2,1),
+        (6,'Олег','Павляк','https://thumb.tildacdn.com/tild3065-6431-4738-a432-363230623831/-/resize/258x/-/format/webp/AW5B7166_1_1.png','Львов',2,1),
+        (7,'Ярослав','Волошин','https://thumb.tildacdn.com/tild3531-3863-4237-a337-636333616266/-/resize/258x/-/format/webp/52_1.png','Ивано-Франковск',2,1),
+        (8,'Сергей','Полюга','https://thumb.tildacdn.com/tild3234-6335-4135-b464-666436633134/-/resize/258x/-/format/webp/112_1.png','Черновцы',2,1),
+        (9,'Алексей','Михайлов','https://thumb.tildacdn.com/tild3233-3232-4135-b937-353035623863/-/resize/258x/-/format/webp/photo.png','Киев',3,1),
+        (10,'Дмитрий','Шевцов','https://thumb.tildacdn.com/tild3062-3466-4565-b534-313831646362/-/resize/258x/-/format/webp/photo.png','Харьков',3,1),
+        (11,'Владислав','Авксентенко','https://thumb.tildacdn.com/tild3834-6266-4036-b765-396536653039/-/resize/258x/-/format/webp/155_1.png','Харьков',3,1),
+        (12,'Микола','Гавриляк','https://thumb.tildacdn.com/tild3736-3938-4838-a134-643266636365/-/resize/258x/-/format/webp/242_1_1.png','Львов',3,1),
+        (13,'Сергей','Мусихин','https://thumb.tildacdn.com/tild3166-3063-4364-b938-613439336435/-/resize/258x/-/format/webp/AW5B8179_1_1.png','Киев',4,1),
+        (14,'Касым','Сапаров','https://thumb.tildacdn.com/tild6436-6335-4166-a337-393233316166/-/resize/258x/-/format/webp/AW5B8197_1.png','Харьков',4,1),
+        (15,'Александр','Гушуватый','https://thumb.tildacdn.com/tild3962-6437-4565-b861-636630623864/-/resize/258x/-/format/webp/photo.png','Черновцы',4,1),
+        (16,'Богдан','Голосов','https://thumb.tildacdn.com/tild3330-3338-4066-b563-353462343261/-/resize/258x/-/format/webp/photo.png','Киев',4,1),
+        (17,'Игорь','Сойкин','https://thumb.tildacdn.com/tild6365-3336-4434-b335-306338643361/-/resize/258x/-/format/webp/AW5B8547_1.png','Харьков',5,1),
+        (18,'Даниил','Линчевский','https://thumb.tildacdn.com/tild6566-6234-4463-b839-373661633737/-/resize/258x/-/format/webp/AW5B8280_1.png','Николаев',5,1),
+        (19,'Артур','Дубаускас','https://thumb.tildacdn.com/tild3038-3535-4662-b263-623531326335/-/resize/258x/-/format/webp/AW5B8734_1.png','Винница',5,1),
+        (20,'Эзиз','Оразмедов','https://thumb.tildacdn.com/tild6266-3361-4739-a565-383639373137/-/resize/258x/-/format/webp/167_1.png','Киев',5,1),
+        (21,'Станислав','Хмыльковский','https://thumb.tildacdn.com/tild3261-3035-4562-b037-363130346530/-/resize/258x/-/format/webp/AW5B8644_1.png','Ивано-Франковск',6,1),
+        (22,'Даниил','Воеводкин','https://thumb.tildacdn.com/tild3365-6265-4461-a532-613066653463/-/resize/258x/-/format/webp/__2_1_3.png','Николаев',6,1),
+        (23,'Роман','Кошель','https://thumb.tildacdn.com/tild3363-6465-4662-b530-643438333933/-/resize/258x/-/format/webp/__2_1.png','Харьков',6,1);"""
     )
     op.create_table(
         "match",
@@ -101,6 +114,40 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_match_id"), "match", ["id"], unique=False)
+    op.create_table(
+        "match_event",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("title", sa.String(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.execute("""insert into match_event values
+    (1,'Победа первого бойца в бою'),
+    (2,'Победа второго бойца в бою'),
+    (3,'Победа первого бойца в 1 раунде'),
+    (4,'Победа второго бойца в 1 раунде'),
+    (5,'Победа первого бойца в 2 раунде'),
+    (6,'Победа второго бойца в 2 раунде'),
+    (7,'Победа первого бойца в 3 раунде'),
+    (8,'Победа второго бойца в 3 раунде'),
+    (9,'Победа первого бойца в 4 раунде'),
+    (10,'Победа второго бойца в 4 раунде'),
+    (11,'Победа первого бойца в 5 раунде'),
+    (12,'Победа второго бойца в 5 раунде'),
+    (13,'Победа первого бойца в 6 раунде'),
+    (14,'Победа второго бойца в 6 раунде'),
+    (15,'Победа первого бойца в 7 раунде'),
+    (16,'Победа второго бойца в 7 раунде'),
+    (17,'Победа первого бойца в 8 раунде'),
+    (18,'Победа второго бойца в 8 раунде'),
+    (19,'Победа первого бойца в 9 раунде'),
+    (20,'Победа второго бойца в 9 раунде'),
+    (21,'Победа первого бойца в 10 раунде'),
+    (22,'Победа второго бойца в 10 раунде'),
+    (23,'Победа первого бойца в 11 раунде'),
+    (24,'Победа второго бойца в 11 раунде'),
+    (25,'Победа первого бойца в 12 раунде'),
+    (26,'Победа второго бойца в 12 раунде')
+    """)
 
 
 def downgrade():
@@ -112,5 +159,7 @@ def downgrade():
     op.drop_table("fighter")
     op.drop_index(op.f("ix_weight_category_title"), table_name="weight_category")
     op.drop_index(op.f("ix_weight_category_id"), table_name="weight_category")
-    op.execute("""delete from weight_category;""")
+
     op.execute("drop table weight_category cascade")
+    op.execute("drop table league cascade")
+    op.execute("drop table match_event cascade")
