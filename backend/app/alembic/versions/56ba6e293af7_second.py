@@ -21,9 +21,9 @@ def upgrade():
     op.create_table(
         "weight_category",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("title", sa.String(), nullable=True),
-        sa.Column("min_weight", sa.Numeric(precision=5, scale=2), nullable=True),
-        sa.Column("max_weight", sa.Numeric(precision=5, scale=2), nullable=True),
+        sa.Column("title", sa.String(), nullable=False),
+        sa.Column("min_weight", sa.Numeric(precision=5, scale=2), nullable=False),
+        sa.Column("max_weight", sa.Numeric(precision=5, scale=2), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
@@ -50,9 +50,12 @@ def upgrade():
         sa.Column("max_rounds", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.execute("""insert into league values
+    op.create_index(op.f("ix_league_id"), "league", ["id"], unique=False),
+    op.execute(
+        """insert into league values
                (1, 'K-1', 3, 4);
-               """)
+               """
+    )
 
     op.create_table(
         "fighter",
@@ -114,43 +117,65 @@ def upgrade():
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_match_id"), "match", ["id"], unique=False)
+
     op.create_table(
         "match_event",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("title", sa.String(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.execute("""insert into match_event values
-    (1,'Победа первого бойца в бою'),
-    (2,'Победа второго бойца в бою'),
-    (3,'Победа первого бойца в 1 раунде'),
-    (4,'Победа второго бойца в 1 раунде'),
-    (5,'Победа первого бойца в 2 раунде'),
-    (6,'Победа второго бойца в 2 раунде'),
-    (7,'Победа первого бойца в 3 раунде'),
-    (8,'Победа второго бойца в 3 раунде'),
-    (9,'Победа первого бойца в 4 раунде'),
-    (10,'Победа второго бойца в 4 раунде'),
-    (11,'Победа первого бойца в 5 раунде'),
-    (12,'Победа второго бойца в 5 раунде'),
-    (13,'Победа первого бойца в 6 раунде'),
-    (14,'Победа второго бойца в 6 раунде'),
-    (15,'Победа первого бойца в 7 раунде'),
-    (16,'Победа второго бойца в 7 раунде'),
-    (17,'Победа первого бойца в 8 раунде'),
-    (18,'Победа второго бойца в 8 раунде'),
-    (19,'Победа первого бойца в 9 раунде'),
-    (20,'Победа второго бойца в 9 раунде'),
-    (21,'Победа первого бойца в 10 раунде'),
-    (22,'Победа второго бойца в 10 раунде'),
-    (23,'Победа первого бойца в 11 раунде'),
-    (24,'Победа второго бойца в 11 раунде'),
-    (25,'Победа первого бойца в 12 раунде'),
-    (26,'Победа второго бойца в 12 раунде')
-    """)
+    op.execute(
+        """insert into match_event values
+    (1,'Победа 1го бойца в бою'),
+    (2,'Победа 2го бойца в бою'),
+    (3,'Победа 1го бойца в 1 раунде'),
+    (4,'Победа 2го бойца в 1 раунде'),
+    (5,'Победа 1го бойца в 2 раунде'),
+    (6,'Победа 2го бойца в 2 раунде'),
+    (7,'Победа 1го бойца в 3 раунде'),
+    (8,'Победа 2го бойца в 3 раунде'),
+    (9,'Победа 1го бойца в 4 раунде'),
+    (10,'Победа 2го бойца в 4 раунде'),
+    (11,'Победа 1го бойца в 5 раунде'),
+    (12,'Победа 2го бойца в 5 раунде'),
+    (13,'Победа 1го бойца в 6 раунде'),
+    (14,'Победа 2го бойца в 6 раунде'),
+    (15,'Победа 1го бойца в 7 раунде'),
+    (16,'Победа 2го бойца в 7 раунде'),
+    (17,'Победа 1го бойца в 8 раунде'),
+    (18,'Победа 2го бойца в 8 раунде'),
+    (19,'Победа 1го бойца в 9 раунде'),
+    (20,'Победа 2го бойца в 9 раунде'),
+    (21,'Победа 1го бойца в 10 раунде'),
+    (22,'Победа 2го бойца в 10 раунде'),
+    (23,'Победа 1го бойца в 11 раунде'),
+    (24,'Победа 2го бойца в 11 раунде'),
+    (25,'Победа 1го бойца в 12 раунде'),
+    (26,'Победа 2го бойца в 12 раунде')
+    """
+    )
+    op.create_table(
+        "match_event_odds",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("match_id", sa.Integer(), nullable=False),
+        sa.Column("match_event_id", sa.Integer(), nullable=False),
+        sa.Column("odds", sa.Numeric(precision=4, scale=2), nullable=False),
+        sa.ForeignKeyConstraint(["match_event_id"], ["match_event.id"]),
+        sa.ForeignKeyConstraint(["match_id"], ["match.id"]),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_match_event_odds_id"), "match_event_odds", ["id"], unique=False
+    )
+    op.create_index(op.f("ix_match_event_id"), "match_event", ["id"], unique=False)
+
 
 
 def downgrade():
+    op.drop_index(op.f('ix_match_event_id'), table_name='match_event')
+    op.drop_index(op.f('ix_match_event_odds_id'), table_name='match_event_odds')
+    op.drop_table('match_event_odds')
+    op.execute("drop table match_event")
     op.drop_index(op.f("ix_match_id"), table_name="match")
     op.drop_table("match")
     op.drop_index(op.f("ix_fighter_last_name"), table_name="fighter")
@@ -160,6 +185,5 @@ def downgrade():
     op.drop_index(op.f("ix_weight_category_title"), table_name="weight_category")
     op.drop_index(op.f("ix_weight_category_id"), table_name="weight_category")
 
-    op.execute("drop table weight_category cascade")
-    op.execute("drop table league cascade")
-    op.execute("drop table match_event cascade")
+    op.execute("drop table weight_category")
+    op.execute("drop table league")

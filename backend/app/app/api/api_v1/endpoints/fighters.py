@@ -13,8 +13,10 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.FighterBase])
 def read_fighters(
-    db: Session = Depends(deps.get_db), skip: int = 0, limit: int = 100,
-        current_user: models.User = Depends(deps.get_current_active_superuser)
+    db: Session = Depends(deps.get_db),
+    skip: int = 0,
+    limit: int = 100,
+    current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Retrieve fighters
@@ -22,10 +24,9 @@ def read_fighters(
     fighters = crud.crud_fighter.get_fighters(db=db, skip=skip, limit=limit)
     return fighters
 
+
 @router.get("/<id>", response_model=schemas.FighterBase)
-def read_fighter(
-    id, db: Session = Depends(deps.get_db)
-) -> Any:
+def read_fighter(id, db: Session = Depends(deps.get_db)) -> Any:
     """
     Retrieve fighter
     """

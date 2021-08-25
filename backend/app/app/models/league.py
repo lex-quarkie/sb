@@ -11,4 +11,3 @@ class League(Base):
     min_rounds = Column(Integer, nullable=False)
     max_rounds = Column(Integer, nullable=False)
     fighters = relationship("Fighter", backref="league")
-

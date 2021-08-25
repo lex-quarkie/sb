@@ -13,7 +13,6 @@ class FighterBase(BaseModel):
     class Config:
         orm_mode = True
 
+
 class FighterInDBBase(FighterBase):
     id: Optional[int] = None
-
-
